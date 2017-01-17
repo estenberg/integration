@@ -23,12 +23,8 @@ services:
         environment:
             MAPPED_PORT: 8080
         volumes:
-#            - ./ssl/mender-api-gateway/cert.pem:/var/www/mendersoftware/cert/cert.pem
-#            - ./ssl/mender-api-gateway/key.pem:/var/www/mendersoftware/cert/key.pem
-            - ./ecc/certificate.pem:/var/www/mendersoftware/cert/cert.pem
-            - ./ecc/private.pem:/var/www/mendersoftware/cert/key.pem
-
-
+            - ./ssl/mender-api-gateway/cert.pem:/var/www/mendersoftware/cert/cert.pem
+            - ./ssl/mender-api-gateway/key.pem:/var/www/mendersoftware/cert/key.pem
             - ./gateway/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
 
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 if [ -z "$CERT_API_CN" ] || [ -z "$CERT_STORAGE_CN" ] ; then
     echo "Environment variables CERT_API_CN and CERT_STORAGE_CN need to be set."
@@ -22,12 +22,25 @@ cd $KEYDIR
 mkdir api-gateway storage-proxy
 
 cd api-gateway
-openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey rsa:3072 -keyout private.pem -out certificate.pem -subj /CN=$CERT_API_CN
+#openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey rsa:3072 -keyout private.pem -out certificate.pem -subj /CN=$CERT_API_CN
+openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey ec:<(openssl ecparam -name prime256v1) -keyout private.pem -out certificate.pem -subj /CN=$CERT_API_CN
+#openssl ec -in private.pem -out private.pem
+#openssl ecparam -name prime256v1 > ecparam.txt
+#cat ecparam.txt private-noparam.pem > private.pem
+
+#openssl ecparam -out private.pem -name prime256v1 -genkey
+#openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -key private.pem -out certificate.pem -subj /CN=$CERT_API_CN
 cd ..
 
 cd storage-proxy
-openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey rsa:3072 -keyout private.pem -out certificate.pem -subj /CN=$CERT_STORAGE_CN
+#openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey rsa:3072 -keyout private.pem -out certificate.pem -subj /CN=$CERT_STORAGE_CN
+openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey ec:<(openssl ecparam -name prime256v1) -keyout private.pem -out certificate.pem -subj /CN=$CERT_API_CN
+#openssl ecparam -out private.pem -name prime256v1 -genkey
+#openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -key private.pem -out certificate.pem -subj /CN=$CERT_API_CN
 cd ..
+
+#openssl ecparam -out private.pem -name prime256v1 -genkey
+#openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -key private.pem -out certificate.pem -subj /CN=$CERT_API_CN
 
 # openssl ecparam -name secp256k1 -genkey -param_enc explicit -out private-key.pem  # or prime256v1
 # openssl req -new -x509 -key private-key.pem -out server.pem -days 730 -subj /CN=docker.mender.io
