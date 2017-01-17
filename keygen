@@ -29,6 +29,9 @@ cd storage-proxy
 openssl req -x509 -sha256 -nodes -days $CERT_VALID_DAYS -newkey rsa:3072 -keyout private.pem -out certificate.pem -subj /CN=$CERT_STORAGE_CN
 cd ..
 
+# openssl ecparam -name secp256k1 -genkey -param_enc explicit -out private-key.pem  # or prime256v1
+# openssl req -new -x509 -key private-key.pem -out server.pem -days 730 -subj /CN=docker.mender.io
+
 
 # generate keys for signing JSON Web Tokens
 
@@ -37,6 +40,7 @@ do
   mkdir $DIR
   cd $DIR
   openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:3072
+  #openssl ecparam -name secp256k1 -genkey -noout -out secp256k1-key.pem
 
   # convert to RSA private key format, otherwise services complain:"
   # level=fatal msg="failed to read rsa private key: jwt: can't open key - not an rsa private key" file=proc.go func=runtime.main line=183
